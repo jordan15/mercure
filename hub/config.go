@@ -36,8 +36,8 @@ func SetConfigDefaults(v *viper.Viper) {
 
 // ValidateConfig validates a Viper instance.
 func ValidateConfig(v *viper.Viper) error {
-	if v.GetString("publisher_jwt_key") == "" && v.GetString("jwt_key") == "" {
-		return fmt.Errorf(`%w: one of "jwt_key" or "publisher_jwt_key" configuration parameter must be defined`, ErrInvalidConfig)
+	if v.GetString("publisher_jwt_key") == "" && v.GetString("jwt_key") == "" && v.GetString("jwt_key_file") == "" {
+		return fmt.Errorf(`%w: one of "jwt_key" or "publisher_jwt_key" or "jwt_key_file" configuration parameter must be defined`, ErrInvalidConfig)
 	}
 	if v.GetString("cert_file") != "" && v.GetString("key_file") == "" {
 		return fmt.Errorf(`%w: if the "cert_file" configuration parameter is defined, "key_file" must be defined too`, ErrInvalidConfig)

@@ -6,9 +6,10 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
+	"io/ioutil"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -56,10 +57,31 @@ func (h *Hub) getJWTKey(r role) []byte {
 		configKey = "publisher_jwt_key"
 	}
 
+	log.WithFields(log.Fields{"protocol": "http"}).Info("On cherche le key")
+
 	key := h.config.GetString(configKey)
 	if key == "" {
 		key = h.config.GetString("jwt_key")
 	}
+
+	if key == "" {
+		log.WithFields(log.Fields{"protocol": "http"}).Info("Pas de keyfile")
+
+		path := h.config.GetString("jwt_key_file")
+
+
+		dat, err := ioutil.ReadFile(path)
+
+		if err != nil {
+			log.Panicf("Error : [%s path]", path)
+		}
+		log.WithFields(log.Fields{"protocol": "http"}).Info(path)
+
+		key = string(dat)
+		log.WithFields(log.Fields{"protocol": "http"}).Info(key)
+
+	}
+
 	if key == "" {
 		log.Panicf("one of these configuration parameters must be defined: [%s jwt_key]", configKey)
 	}
