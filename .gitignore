@@ -1,6 +1,5 @@
 /dist
 /gin-bin
-/mercure
 /vendor
 /certs
 /*.db
